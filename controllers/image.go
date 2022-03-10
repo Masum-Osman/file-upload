@@ -49,7 +49,20 @@ func (c *ImageController) Post() {
 // @Failure 403 :id is empty
 // @router /:id [get]
 func (c *ImageController) GetOne() {
+	image_id := c.GetString(":id")
 
+	if image_id != "" {
+		image := Image{}
+
+		image.Id = "o785uc9e5e32veav656vgd_custom"
+		image.Url = "https://s3-ap-southeast-1.amazonaws.com/merchantlogo.pay/merchant-default-logo.png"
+		image.MetaData.Author = "ami nije"
+		image.MetaData.Category = "human"
+		image.MetaData.LastUpdated = "10-1-2501"
+
+		c.Data["json"] = image
+		c.ServeJSON()
+	}
 }
 
 // GetAll ...

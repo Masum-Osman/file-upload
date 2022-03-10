@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"file_upload/models"
 	"encoding/json"
+	"file_upload/models"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
@@ -116,4 +116,3 @@ func (u *UserController) Logout() {
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
-
