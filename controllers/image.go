@@ -12,6 +12,7 @@ type ImageController struct {
 type Image struct {
 	Id       string
 	Url      string
+	ParamId  string
 	MetaData MetaData
 }
 
@@ -55,6 +56,7 @@ func (c *ImageController) GetOne() {
 		image := Image{}
 
 		image.Id = "o785uc9e5e32veav656vgd_custom"
+		image.ParamId = image_id
 		image.Url = "https://s3-ap-southeast-1.amazonaws.com/merchantlogo.pay/merchant-default-logo.png"
 		image.MetaData.Author = "ami nije"
 		image.MetaData.Category = "human"
