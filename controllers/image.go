@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
+	"os"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
@@ -42,37 +43,45 @@ func (c *ImageController) URLMapping() {
 // @Failure 403 body is empty
 // @router / [post]
 func (c *ImageController) Post() {
-	file, handler, err := c.GetFile("myFile")
+	file, hndl, err := c.GetFile("file")
+
+	fmt.Println(file)
 
 	if err != nil {
-		fmt.Println("Error Retrieving the File")
-		fmt.Println(err)
-		return
+		c.Data["json"] = err
+		c.ServeJSON()
 	}
-
-	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-	fmt.Printf("MIME Header: %+v\n", handler.Header)
-
-	// Create a temporary file within our temp-images directory that follows
-	// a particular naming pattern
-	tempFile, err := ioutil.TempFile("temp-images", "upload-*.png")
+	src, err := hndl.Open()
 	if err != nil {
-		fmt.Println(err)
+		c.Data["json"] = err
+		c.ServeJSON()
 	}
-	defer tempFile.Close()
+	defer src.Close()
 
-	// read all of the contents of our uploaded file into a
-	// byte array
-	fileBytes, err := ioutil.ReadAll(file)
+	// Destination
+	dst, err := os.Create(hndl.Filename)
 	if err != nil {
-		fmt.Println(err)
+		c.Data["json"] = err
+		c.ServeJSON()
 	}
-	// write this byte array to our temporary file
-	tempFile.Write(fileBytes)
-	// return that we have successfully uploaded our file!
-	// fmt.Fprintf(w, "Successfully Uploaded File\n")
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		c.Data["json"] = err
+		c.ServeJSON()
+	}
+	c.Data["json"] = "image"
+	c.ServeJSON()
+
+	/*
+
+		c.Data["json"] = err
+		c.ServeJSON()
+
+		c.Data["json"] = "image"
+		c.ServeJSON()
+	*/
 }
 
 // GetOne ...
